@@ -1,0 +1,273 @@
+{
+  "meta": {
+    "instanceId": "7fdc912a14c5de2a2ee62207cc8d6b6b0e634302d73adb6237d84575a3e713bb",
+    "templateCredsSetupCompleted": true
+  },
+  "nodes": [
+    {
+      "id": "0efdbfa2-e8a4-40e3-804e-19ec7dc0ca30",
+      "name": "KlickTipp Trigger",
+      "type": "n8n-nodes-klicktipp.klicktippTrigger",
+      "notes": "This webhook waits for data from submissions on the webinar registration landing page.",
+      "position": [176, 208],
+      "webhookId": "fd2fc9bd-21ae-4d31-9e2f-8eda01c78e69",
+      "parameters": {
+        "path": "zoom_webinar_registration"
+      },
+      "credentials": {
+        "klickTippApi": {
+          "id": "51vvRGb1OLID2QbR",
+          "name": "KlickTipp DEMO Integrations"
+        }
+      },
+      "notesInFlow": true,
+      "typeVersion": 1
+    },
+    {
+      "id": "d18900c4-82ea-49ba-b9a6-6762b7b9cf69",
+      "name": "Switch",
+      "type": "n8n-nodes-base.switch",
+      "notes": "This node filters the submission based on the webinar choice of the registration process.",
+      "position": [432, 208],
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "outputKey": "E-Mail Zustellung für Anfänger",
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "7acd3846-c024-4064-a48d-f57b0bb3d2fe",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.CustomField219989 }}",
+                    "rightValue": "E-Mail Zustellung für Anfänger"
+                  }
+                ]
+              },
+              "renameOutput": true
+            },
+            {
+              "outputKey": "E-Mail Zustellung für Experten",
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "id": "09123957-6994-48a4-8e7f-2ecd4e4ecc3b",
+                    "operator": {
+                      "name": "filter.operator.equals",
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.CustomField219989 }}",
+                    "rightValue": "E-Mail Zustellung für Experten"
+                  }
+                ]
+              },
+              "renameOutput": true
+            }
+          ]
+        },
+        "options": {}
+      },
+      "notesInFlow": true,
+      "typeVersion": 3.2
+    },
+    {
+      "id": "df9b2810-0dda-4a31-abb5-a1048da7715a",
+      "name": "Register for webinar A",
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "This node registers for the \"E-Mail Zustellung für Anfänger\" webinar. Replace the ID in the URL with your according webinar ID.",
+      "position": [800, 112],
+      "parameters": {
+        "url": "https://api.zoom.us/v2/webinars/89062978982/registrants",
+        "method": "POST",
+        "options": {},
+        "jsonBody": "={\n    \"first_name\": \"{{ $('KlickTipp Trigger').item.json.CustomFieldFirstName }}\",\n    \"last_name\": \"{{ $('KlickTipp Trigger').item.json.CustomFieldLastName }}\",\n    \"email\": \"{{ $('KlickTipp Trigger').item.json.email }}\"\n  }",
+        "sendBody": true,
+        "specifyBody": "json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zoomOAuth2Api"
+      },
+      "credentials": {
+        "zoomOAuth2Api": {
+          "id": "1h9rpYwUovuBMWKK",
+          "name": "Ricardo's Zoom account"
+        }
+      },
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "id": "5ee6137e-af5f-43c6-b501-7e9c8383afc8",
+      "name": "Register for webinar B",
+      "type": "n8n-nodes-base.httpRequest",
+      "notes": "This node registers for the \"E-Mail Zustellung für Experten\" webinar. Replace the ID in the URL with your according webinar ID.",
+      "position": [800, 320],
+      "parameters": {
+        "url": "https://api.zoom.us/v2/webinars/84861299706/registrants",
+        "method": "POST",
+        "options": {},
+        "jsonBody": "={\n    \"first_name\": \"{{ $('KlickTipp Trigger').item.json.CustomFieldFirstName }}\",\n    \"last_name\": \"{{ $('KlickTipp Trigger').item.json.CustomFieldLastName }}\",\n    \"email\": \"{{ $('KlickTipp Trigger').item.json.email }}\"\n  }",
+        "sendBody": true,
+        "specifyBody": "json",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "zoomOAuth2Api"
+      },
+      "credentials": {
+        "zoomOAuth2Api": {
+          "id": "1h9rpYwUovuBMWKK",
+          "name": "Ricardo's Zoom account"
+        }
+      },
+      "notesInFlow": true,
+      "typeVersion": 4.2
+    },
+    {
+      "id": "9ce78995-0b04-49c3-8766-642c44901dbf",
+      "name": "Add \"Anfänger\" webinar data to contact",
+      "type": "n8n-nodes-klicktipp.klicktipp",
+      "notes": "Writes join URL and webinar start and applies the registration tag in one call, so the campaign only starts once the data is present.",
+      "position": [1120, 112],
+      "parameters": {
+        "email": "={{ $('KlickTipp Trigger').item.json.email }}",
+        "tagId": "12687810",
+        "fields": {
+          "dataFields": [
+            {
+              "fieldId": "field219991",
+              "fieldValue": "={{ $json.join_url }}"
+            },
+            {
+              "fieldId": "field219990",
+              "fieldValue": "={{ /* Next upcoming occurrence for recurring webinars, otherwise start_time. Unix seconds. */ Math.floor(new Date((($json.occurrences || []).filter(o => o.status !== 'deleted' && new Date(o.start_time) > new Date()).sort((a, b) => new Date(a.start_time) - new Date(b.start_time))[0] || $json).start_time).getTime() / 1000) }}"
+            }
+          ]
+        },
+        "listId": "358895",
+        "resource": "subscriber",
+        "operation": "subscribe"
+      },
+      "credentials": {
+        "klickTippApi": {
+          "id": "51vvRGb1OLID2QbR",
+          "name": "KlickTipp DEMO Integrations"
+        }
+      },
+      "notesInFlow": true,
+      "typeVersion": 3
+    },
+    {
+      "id": "1f3bbaf4-f54e-426e-b720-848c4467be83",
+      "name": "Add \"Experten\" webinar data to contact",
+      "type": "n8n-nodes-klicktipp.klicktipp",
+      "notes": "Writes join URL and webinar start and applies the registration tag in one call, so the campaign only starts once the data is present.",
+      "position": [1120, 320],
+      "parameters": {
+        "email": "={{ $('KlickTipp Trigger').item.json.email }}",
+        "tagId": "12932286",
+        "fields": {
+          "dataFields": [
+            {
+              "fieldId": "field219991",
+              "fieldValue": "={{ $json.join_url }}"
+            },
+            {
+              "fieldId": "field219990",
+              "fieldValue": "={{ /* Next upcoming occurrence for recurring webinars, otherwise start_time. Unix seconds. */ Math.floor(new Date((($json.occurrences || []).filter(o => o.status !== 'deleted' && new Date(o.start_time) > new Date()).sort((a, b) => new Date(a.start_time) - new Date(b.start_time))[0] || $json).start_time).getTime() / 1000) }}"
+            }
+          ]
+        },
+        "listId": "358895",
+        "resource": "subscriber",
+        "operation": "subscribe"
+      },
+      "credentials": {
+        "klickTippApi": {
+          "id": "51vvRGb1OLID2QbR",
+          "name": "KlickTipp DEMO Integrations"
+        }
+      },
+      "notesInFlow": true,
+      "typeVersion": 3
+    }
+  ],
+  "pinData": {
+    "KlickTipp Trigger": [
+      {
+        "email": "ricardo.kluenter+miiiiiauuuuu@klicktipptest.com",
+        "CustomField219989": "E-Mail Zustellung für Anfänger",
+        "CustomFieldLastName": "Klünter",
+        "CustomFieldFirstName": "Ricardo"
+      }
+    ]
+  },
+  "connections": {
+    "Switch": {
+      "main": [
+        [
+          {
+            "node": "Register for webinar A",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Register for webinar B",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "KlickTipp Trigger": {
+      "main": [
+        [
+          {
+            "node": "Switch",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register for webinar A": {
+      "main": [
+        [
+          {
+            "node": "Add \"Anfänger\" webinar data to contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Register for webinar B": {
+      "main": [
+        [
+          {
+            "node": "Add \"Experten\" webinar data to contact",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
