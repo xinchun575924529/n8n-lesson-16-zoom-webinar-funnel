@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>n8n 实战课 16：落地页表单 → Zoom 研讨会自动报名漏斗</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: "Microsoft YaHei", "PingFang SC", sans-serif; background: #0f1b2d; color: #e8eef7; line-height: 1.7; }
+  .wrap { max-width: 880px; margin: 0 auto; padding: 48px 24px 80px; }
+  .badge { display: inline-block; background: #1d4ed8; color: #fff; font-size: 13px; padding: 4px 14px; border-radius: 999px; letter-spacing: 1px; }
+  h1 { font-size: 34px; margin: 18px 0 10px; line-height: 1.35; }
+  .sub { color: #93a7c4; font-size: 16px; margin-bottom: 32px; }
+  .card { background: #16263f; border: 1px solid #24405f; border-radius: 14px; padding: 24px 28px; margin-bottom: 22px; }
+  .card h2 { font-size: 20px; color: #7db4ff; margin-bottom: 12px; }
+  .card ul { padding-left: 22px; }
+  .card li { margin: 6px 0; }
+  .flow { background: #0b1524; border-radius: 10px; padding: 18px 20px; font-family: Consolas, monospace; font-size: 14px; color: #9fe6a0; white-space: pre-wrap; }
+  .pill { display: inline-block; background: #0b1524; border: 1px solid #2c4a70; border-radius: 8px; padding: 2px 10px; font-size: 13px; color: #ffd479; margin: 2px 4px 2px 0; }
+  .kpis { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 22px; }
+  .kpi { flex: 1; min-width: 140px; background: #16263f; border: 1px solid #24405f; border-radius: 12px; padding: 16px; text-align: center; }
+  .kpi b { display: block; font-size: 26px; color: #7db4ff; }
+  .kpi span { font-size: 13px; color: #93a7c4; }
+  a.btn { display: inline-block; background: #1d4ed8; color: #fff; text-decoration: none; padding: 12px 26px; border-radius: 10px; font-size: 16px; margin-top: 8px; }
+  a.btn:hover { background: #2563eb; }
+  .foot { color: #5c7292; font-size: 13px; margin-top: 36px; text-align: center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <span class="badge">n8n 实战课 16</span>
+  <h1>落地页表单 → Zoom 网络研讨会<br>自动报名漏斗</h1>
+  <p class="sub">官方模板 8416（KlickTipp + Zoom）· 中国免费替身版 · 三层验证 29/29 全绿</p>
+
+  <div class="kpis">
+    <div class="kpi"><b>3</b><span>功能节点吃透</span></div>
+    <div class="kpi"><b>29/29</b><span>三层断言全过</span></div>
+    <div class="kpi"><b>0 元</b><span>免费替身真跑</span></div>
+    <div class="kpi"><b>7 坑</b><span>实锤+修复方案</span></div>
+  </div>
+
+  <div class="card">
+    <h2>这条流水线干什么</h2>
+    <div class="flow">落地页表单提交（含研讨会选择）
+  → webhook 触发 n8n
+  → Switch 按选择分流（新手场 / 专家场）
+  → Zoom API 报名，拿回专属参会链接
+  → 联系人档案回写：链接 + 未来最近场时间 + 报名 tag（一次调用）
+  → 营销提醒序列在数据就绪后才启动</div>
+  </div>
+
+  <div class="card">
+    <h2>你会学到</h2>
+    <ul>
+      <li>「表单 → 分流 → 外部注册 → CRM 回写」四段式营销漏斗骨架</li>
+      <li>Switch v3.2 严格匹配的真实行为（大小写变体直接被拒）</li>
+      <li>「取未来最近一场」表达式逐行拆解（5 种分支全部单测覆盖）</li>
+      <li>Zoom Webinar Registrants API 与 OAuth2 配置</li>
+      <li>字段+tag+list 一体写入：规避「活动先发、数据后到」竞态</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h2>三大实锤坑（全部断言复现，课程里给修复版）</h2>
+    <span class="pill">坑1 Switch 值不匹配→整条链静默丢弃</span>
+    <span class="pill">坑2 日期表达式无 NaN 守卫</span>
+    <span class="pill">坑3 报名体缺字段无守卫</span>
+    <span class="pill">坑4 手动审批无 join_url</span>
+    <span class="pill">坑5 硬编码 ID 替换清单</span>
+    <span class="pill">坑6 社区节点必须替身</span>
+    <span class="pill">坑7 跨节点引用断链</span>
+  </div>
+
+  <div class="card">
+    <h2>免费替身方案</h2>
+    <ul>
+      <li>KlickTipp（付费 SaaS+社区节点）→ 标准 webhook + Code 写本地 JSON / 飞书多维表</li>
+      <li>Zoom（付费 webinar）→ 本地 mock HTTP 服务真实 POST（教学）/ 腾讯会议 API（生产）</li>
+      <li>Switch 节点免费原样保留，骨架 100% 复用</li>
+    </ul>
+  </div>
+
+  <div class="card" style="text-align:center;">
+    <h2>完整课程包（开源）</h2>
+    <p class="sub">workflow 原样 + 修复版 · 6 篇文档 · 3 道练习 · 获客脚本</p>
+    <a class="btn" href="https://github.com/xinchun575924529/n8n-lesson-16-zoom-webinar-funnel">打开 GitHub 课程库</a>
+  </div>
+
+  <p class="foot">n8n 教案制作组 · 模板来源 n8n.io/workflows/8416 · 三层验证：A 单元 12/12 · B mock 10/10 · C 真跑 7/7</p>
+</div>
+</body>
+</html>
