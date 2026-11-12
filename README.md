@@ -39,3 +39,11 @@ KlickTipp 落地页表单提交（含研讨会选择）
   → KlickTipp 联系人写回：join_url + 未来最近场 Unix 秒 + 报名 tag（一次调用）
   → 营销活动在数据就绪后才启动
 ```
+
+---
+
+## 🛠️ 远程部署服务 ¥99
+
+不想自己折腾环境？工程师 ToDesk/向日葵 远程帮你把本课工作流装好调通（单课 × 1 次，≤60 分钟）。
+
+👉 [立即购买部署服务](https://n8nbox.cn/cashier?item=svc-remote-deploy-01)
